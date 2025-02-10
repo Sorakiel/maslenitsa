@@ -1,0 +1,45 @@
+body {
+	font-family: 'Roboto', sans-serif;
+	background-color: #f0f0f0;
+	margin: 0;
+	padding: 0;
+}
+
+.vkuiPanel {
+	background-color: #ffffff;
+}
+
+.vkuiCard {
+	cursor: pointer;
+}
+
+.vkuiButton {
+	background-color: #2688eb;
+	color: #ffffff;
+}
+
+.vkuiButton:hover {
+	background-color: #1a6fb3;
+}
+
+.puzzle-container {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 5px;
+	margin: 20px 0;
+}
+
+.puzzle-piece {
+	width: 100%;
+	height: 100px;
+	background-color: #ddd;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid #ccc;
+}
+
+.vkuiProgress {
+	height: 8px;
+	border-radius: 4px;
+}
