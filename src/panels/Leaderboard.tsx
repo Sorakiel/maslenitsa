@@ -1,4 +1,11 @@
-import { Avatar, Group, Header, SimpleCell } from '@vkontakte/vkui'
+import {
+	Avatar,
+	Group,
+	Header,
+	Panel,
+	PanelHeader,
+	SimpleCell,
+} from '@vkontakte/vkui'
 import { useEffect, useState } from 'react'
 
 interface LeaderboardEntry {
@@ -7,7 +14,12 @@ interface LeaderboardEntry {
 	score: number
 }
 
-export const Leaderboard = () => {
+interface LeaderboardProps {
+	id: string
+	userScore?: number
+}
+
+const Leaderboard = ({ id }: LeaderboardProps) => {
 	const [leaders, setLeaders] = useState<LeaderboardEntry[]>([])
 
 	useEffect(() => {
@@ -21,16 +33,21 @@ export const Leaderboard = () => {
 	}, [])
 
 	return (
-		<Group header={<Header>Лидерборд</Header>}>
-			{leaders.map((entry, index) => (
-				<SimpleCell
-					key={index}
-					before={<Avatar size={40} />}
-					subtitle={`${entry.score} баллов`}
-				>
-					{entry.name}
-				</SimpleCell>
-			))}
-		</Group>
+		<Panel id={id}>
+			<PanelHeader>Таблица лидеров</PanelHeader>
+			<Group header={<Header>Лидерборд</Header>}>
+				{leaders.map((entry, index) => (
+					<SimpleCell
+						key={index}
+						before={<Avatar size={40} />}
+						subtitle={`${entry.score} баллов`}
+					>
+						{entry.name}
+					</SimpleCell>
+				))}
+			</Group>
+		</Panel>
 	)
 }
+
+export default Leaderboard

@@ -10,7 +10,7 @@ body {
 }
 
 .vkuiCard {
-	cursor: pointer;
+	cursor: default;
 }
 
 .vkuiButton {
@@ -37,9 +37,4 @@ body {
 	align-items: center;
 	justify-content: center;
 	border: 1px solid #ccc;
-}
-
-.vkuiProgress {
-	height: 8px;
-	border-radius: 4px;
 }

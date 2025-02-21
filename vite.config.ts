@@ -43,5 +43,14 @@ export default defineConfig({
 
 	build: {
 		outDir: 'build',
+		rollupOptions: {
+			output: {
+				manualChunks: {
+					vkui: ['@vkontakte/vkui'],
+					vendor: ['react', 'react-dom'],
+					icons: ['@vkontakte/icons'],
+				},
+			},
+		},
 	},
 })

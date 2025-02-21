@@ -8,7 +8,7 @@ interface CollectedPuzzle {
 	time: string
 }
 
-export const CollectedPuzzles = () => {
+const CollectedPuzzles = () => {
 	const [collectedPuzzles, setCollectedPuzzles] = useState<CollectedPuzzle[]>(
 		[]
 	)
@@ -34,3 +34,5 @@ export const CollectedPuzzles = () => {
 		</Group>
 	)
 }
+
+export default CollectedPuzzles

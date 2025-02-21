@@ -7,7 +7,7 @@ interface PuzzleGameProps {
 	onGameEnd: (score: number, timeLeft: number) => void
 }
 
-export const PuzzleGame = ({ puzzle, onGameEnd }: PuzzleGameProps) => {
+const PuzzleGame = ({ puzzle, onGameEnd }: PuzzleGameProps) => {
 	const [timeLeft, setTimeLeft] = useState(120) // 2 минуты
 	const [isCompleted, setIsCompleted] = useState(false)
 	const [pieces, setPieces] = useState<number[]>([])
@@ -59,3 +59,5 @@ export const PuzzleGame = ({ puzzle, onGameEnd }: PuzzleGameProps) => {
 		</Group>
 	)
 }
+
+export default PuzzleGame
