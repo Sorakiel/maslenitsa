@@ -7,12 +7,7 @@ import {
 	SimpleCell,
 } from '@vkontakte/vkui'
 import { useEffect, useState } from 'react'
-
-interface LeaderboardEntry {
-	id: number
-	name: string
-	score: number
-}
+import ApiService from '../services/api'
 
 interface LeaderboardProps {
 	id: string
@@ -20,29 +15,43 @@ interface LeaderboardProps {
 }
 
 const Leaderboard = ({ id }: LeaderboardProps) => {
-	const [leaders, setLeaders] = useState<LeaderboardEntry[]>([])
+	const [leaderboardData, setLeaderboardData] = useState<{
+		leaderboard: Array<{
+			position: number
+			full_name: string
+			photo_url: string
+			score: number
+		}>
+		me: {
+			position: number
+			score: number
+		}
+	} | null>(null)
 
 	useEffect(() => {
-		// Загрузка таблицы лидеров из локального хранилища
-		const leaderboard = JSON.parse(localStorage.getItem('leaderboard') || '[]')
-		setLeaders(
-			leaderboard.sort(
-				(a: LeaderboardEntry, b: LeaderboardEntry) => b.score - a.score
-			)
-		)
+		const fetchLeaderboard = async () => {
+			try {
+				const data = await ApiService.getLeaderboard()
+				setLeaderboardData(data)
+			} catch (error) {
+				console.error('Error fetching leaderboard:', error)
+			}
+		}
+
+		fetchLeaderboard()
 	}, [])
 
 	return (
 		<Panel id={id}>
 			<PanelHeader>Таблица лидеров</PanelHeader>
 			<Group header={<Header>Лидерборд</Header>}>
-				{leaders.map((entry, index) => (
+				{leaderboardData?.leaderboard.map(entry => (
 					<SimpleCell
-						key={index}
-						before={<Avatar size={40} />}
+						key={entry.position}
+						before={<Avatar size={40} src={entry.photo_url} />}
 						subtitle={`${entry.score} баллов`}
 					>
-						{entry.name}
+						{entry.full_name}
 					</SimpleCell>
 				))}
 			</Group>

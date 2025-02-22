@@ -1,2 +1,5 @@
+export { default as CollectedPuzzles } from './CollectedPuzzles'
 export { default as Home } from './Home'
 export { default as Leaderboard } from './Leaderboard'
+export { default as Profile } from './Profile'
+export { default as PuzzleGame } from './PuzzleGame'

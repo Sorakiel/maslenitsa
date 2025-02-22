@@ -1,29 +1,69 @@
-import { Button, Card, CardGrid, Group } from '@vkontakte/vkui'
-import { lazy, useState } from 'react'
+import { Button, Card, CardGrid, Group, Spinner } from '@vkontakte/vkui'
+import { useEffect, useState } from 'react'
+import ApiService from '../services/api'
 import { PuzzleItem } from '../types'
+import PuzzleGame from './PuzzleGame'
 
-const puzzles: PuzzleItem[] = Array.from({ length: 12 }, (_, index) => ({
-	id: index,
-	image: `/assets/puzzles/puzzle_${index}.jpg`,
-	title: `Пазл ${index + 1}`,
-	difficulty: 'easy',
-}))
-
-const PuzzleGame = lazy(() => import('./PuzzleGame'))
+interface PuzzleData {
+	id: number
+	name: string
+	image: string
+	assembled: boolean
+	score: number | null
+	time_spent: number | null
+}
 
 const Home = () => {
+	const [puzzles, setPuzzles] = useState<PuzzleData[]>([])
 	const [selectedPuzzle, setSelectedPuzzle] = useState<PuzzleItem | null>(null)
 	const [isPuzzleGameActive, setIsPuzzleGameActive] = useState(false)
+	const [loading, setLoading] = useState(true)
 
-	const handlePuzzleSelect = (puzzle: PuzzleItem) => {
-		setSelectedPuzzle(puzzle)
+	useEffect(() => {
+		const fetchPuzzles = async () => {
+			try {
+				const puzzlesData = await ApiService.getPuzzlesInfo()
+				setPuzzles(puzzlesData)
+			} catch (error) {
+				console.error('Error fetching puzzles:', error)
+			} finally {
+				setLoading(false)
+			}
+		}
+
+		fetchPuzzles()
+	}, [])
+
+	const handlePuzzleSelect = (puzzle: PuzzleData) => {
+		const puzzleItem: PuzzleItem = {
+			id: puzzle.id,
+			title: puzzle.name,
+			image: puzzle.image,
+			difficulty: 'easy',
+			pieces: Array.from({ length: 36 }, (_, pieceIndex) => `${pieceIndex}`),
+		}
+		setSelectedPuzzle(puzzleItem)
 		setIsPuzzleGameActive(true)
 	}
 
-	const handleGameEnd = (score: number, timeLeft: number) => {
+	const handleGameEnd = async (score: number, timeLeft: number) => {
 		setIsPuzzleGameActive(false)
-		console.log(
-			`Игра завершена. Баллы: ${score}, Оставшееся время: ${timeLeft}`
+		// Обновляем список пазлов после завершения игры
+		try {
+			const puzzlesData = await ApiService.getPuzzlesInfo()
+			setPuzzles(puzzlesData)
+		} catch (error) {
+			console.error('Error updating puzzles:', error)
+		}
+	}
+
+	if (loading) {
+		return (
+			<Group>
+				<div style={{ display: 'flex', justifyContent: 'center', padding: 20 }}>
+					<Spinner size='l' />
+				</div>
+			</Group>
 		)
 	}
 
@@ -49,7 +89,7 @@ const Home = () => {
 						>
 							<img
 								src={puzzle.image}
-								alt={puzzle.title}
+								alt={puzzle.name}
 								style={{
 									width: '80px',
 									height: '80px',
@@ -67,20 +107,26 @@ const Home = () => {
 									height: '80px',
 								}}
 							>
-								<h3>{puzzle.title}</h3>
-								<Button
-									size='m'
-									mode='primary'
-									style={{
-										backgroundColor: '#2688eb',
-										color: '#ffffff',
-										width: '100px',
-										marginBottom: '10px',
-									}}
-									onClick={() => handlePuzzleSelect(puzzle)}
-								>
-									Собрать
-								</Button>
+								<h3>{puzzle.name}</h3>
+								{puzzle.assembled ? (
+									<div style={{ fontSize: '14px', color: '#818C99' }}>
+										Собран: {puzzle.score}/10
+									</div>
+								) : (
+									<Button
+										size='m'
+										mode='primary'
+										style={{
+											backgroundColor: '#2688eb',
+											color: '#ffffff',
+											width: '100px',
+											marginBottom: '10px',
+										}}
+										onClick={() => handlePuzzleSelect(puzzle)}
+									>
+										Собрать
+									</Button>
+								)}
 							</div>
 						</Card>
 					))}
